@@ -3,136 +3,223 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Eksplorasi 100 Menu Kopi</title>
+    <title>Menu Kopi Premium (100 Resep)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    <!-- Chosen Palette: Warm Brew -->
-    <!-- Application Structure Plan: Aplikasi ini dirancang dengan struktur dashboard interaktif. Terdapat navigasi berbasis kategori di bagian atas untuk memfilter resep, dan area konten utama menampilkan resep dalam format kartu (grid) yang responsif. Ketika sebuah kartu diklik, sebuah jendela modal akan muncul menampilkan detail resep. Struktur ini dipilih karena jauh lebih unggul dari PDF linear; memungkinkan pengguna untuk menemukan, membandingkan, dan fokus pada resep tertentu dengan cepat dan intuitif tanpa harus menggulir halaman yang panjang. Ini mengubah pengalaman dari membaca pasif menjadi eksplorasi aktif. -->
-    <!-- Visualization & Content Choices: Resep Kopi -> Tujuan: Mengorganisir & Menginformasikan -> Metode Presentasi: Grid kartu yang dapat difilter (HTML/Tailwind) & Modal detail (HTML/JS) -> Interaksi: Klik pada filter kategori untuk memperbarui grid; klik pada kartu resep untuk membuka modal. -> Justifikasi: Pendekatan ini memecah 100 item menjadi kelompok yang mudah dikelola, meningkatkan kemampuan pengguna untuk menavigasi konten. Modal memastikan bahwa detail resep disajikan dengan jelas tanpa mengacaukan antarmuka utama. -> Library/Metode: Vanilla JavaScript & Tailwind CSS. -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Warm Brew (Slate & Amber) -->
+    <!-- Application Structure Plan: Aplikasi ini dirancang dengan gaya "Menu Kafe" interaktif. Bagian header menggunakan latar belakang gelap (slate) untuk menciptakan kesan papan tulis atau counter bar kopi, sedangkan konten utama tetap terang. Navigasi filter (kategori menu) dipertahankan sebagai tab interaktif. Struktur grid kartu (menu item) dipilih untuk memvisualisasikan setiap resep sebagai item menu yang dapat dipilih, dengan modal detail untuk menyajikan komposisi dan cara pembuatan secara terfokus, mendukung eksplorasi cepat dan intuitif. -->
+    <!-- Visualization & Content Choices: Resep Kopi -> Tujuan: Mengorganisir & Menginformasikan -> Metode Presentasi: Grid kartu yang difilter (simulasi menu item) & Modal detail (HTML/JS) -> Interaksi: Klik filter kategori (simulasi memilih bagian menu) untuk memperbarui grid; klik kartu resep untuk membuka modal. -> Justifikasi: Gaya visual yang hangat dan kontras tinggi meningkatkan estetika kafe, sementara interaksi filter dan modal mengatasi keterbatasan PDF yang panjang. -> Library/Metode: Vanilla JavaScript & Tailwind CSS. -->
     <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #FDFBF8;
-            color: #4f46e5; /* Indigo-600 */
+            background-color: #FDFBF8; /* Creamy White */
+            color: #1e293b; /* Slate-800 */
+        }
+        .cafe-header, .cafe-footer {
+            background-color: #1e293b; /* Dark Slate / Chalkboard */
+            color: #fef3c7; /* Pale Amber */
         }
         .active-filter {
-            background-color: #4f46e5; /* Indigo-600 */
+            background-color: #b45309; /* Amber-700 */
             color: #ffffff;
-            font-weight: 600;
+            font-weight: 700;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
         }
         .filter-btn {
-            background-color: #eef2ff; /* Indigo-50 */
-            color: #4338ca; /* Indigo-700 */
+            background-color: #fef3c7; /* Amber-100 */
+            color: #78350f; /* Amber-900 */
             transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
         .filter-btn:hover {
-            background-color: #c7d2fe; /* Indigo-200 */
+            background-color: #fde68a; /* Amber-200 */
         }
         .recipe-card {
             background-color: #ffffff;
-            border: 1px solid #e0e7ff; /* Indigo-100 */
+            border: 1px solid #fde68a; /* Light Amber Border */
             transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
         }
         .recipe-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.1), 0 4px 6px -2px rgba(79, 70, 229, 0.05);
+            transform: translateY(-4px);
+            box-shadow: 0 10px 15px -3px rgba(180, 83, 9, 0.2), 0 4px 6px -2px rgba(180, 83, 9, 0.05);
         }
         .modal {
-            background-color: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(5px);
+            background-color: rgba(30, 41, 59, 0.8); /* Dark Overlay */
+            backdrop-filter: blur(4px);
         }
         .modal-content {
             background-color: #ffffff;
             max-height: 90vh;
         }
         .prose-custom h3 {
-            color: #3730a3; /* Indigo-800 */
-            font-weight: 700;
-            border-bottom: 2px solid #c7d2fe; /* Indigo-200 */
+            color: #b45309; /* Amber-700 */
+            font-weight: 800;
+            border-bottom: 2px solid #fef3c7; /* Light Amber Underline */
             padding-bottom: 0.5rem;
             margin-bottom: 1rem;
+            text-transform: uppercase;
         }
         .prose-custom ul {
-            list-style-position: inside;
-            padding-left: 0;
+            list-style-type: disc;
+            list-style-position: outside;
+            padding-left: 1.5rem;
         }
         .prose-custom li {
             margin-bottom: 0.5rem;
         }
-        .prose-custom p {
-             line-height: 1.75;
-        }
-        .prose-custom strong {
-            color: #4338ca; /* Indigo-700 */
-        }
         .fact-box {
-            background-color: #eef2ff; /* Indigo-50 */
-            border-left: 4px solid #4f46e5; /* Indigo-600 */
+            background-color: #fef3c7; /* Amber-100 */
+            border-left: 4px solid #b45309; /* Amber-700 */
         }
     </style>
 </head>
-<body class="bg-indigo-50 text-slate-800">
+<body class="text-slate-800">
+
+    <div class="cafe-header py-10 mb-8 shadow-xl">
+        <div class="container mx-auto p-4 sm:p-6 lg:p-8 text-center">
+            <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold mb-2 uppercase">Menu Kopi Premium</h1>
+            <p class="text-xl sm:text-2xl font-light tracking-widest">Eksplorasi 100 Varian Pilihan Kafe</p>
+        </div>
+    </div>
 
     <div class="container mx-auto p-4 sm:p-6 lg:p-8">
-        <header class="text-center mb-8">
-            <h1 class="text-4xl sm:text-5xl font-bold text-indigo-800 mb-2">Eksplorasi 100 Menu Kopi</h1>
-            <p class="text-lg text-indigo-600">Temukan resep kopi favorit Anda dari seluruh dunia.</p>
-        </header>
-
-        <nav id="category-filters" class="mb-8 flex flex-wrap justify-center gap-2">
+        <h2 class="text-2xl font-bold mb-4 text-center text-slate-700">Pilih Kategori Menu</h2>
+        <nav id="category-filters" class="mb-10 flex flex-wrap justify-center gap-3">
         </nav>
 
         <main id="recipes-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
+            <!-- Recipe cards will be injected here -->
         </main>
     </div>
 
     <div id="recipe-modal" class="modal fixed inset-0 z-50 hidden items-center justify-center p-4">
         <div class="modal-content w-full max-w-2xl rounded-xl shadow-2xl overflow-y-auto p-6 sm:p-8">
             <div class="flex justify-between items-center mb-4">
-                <h2 id="modal-title" class="text-3xl font-bold text-indigo-800"></h2>
-                <button id="close-modal-btn" class="text-3xl font-light text-slate-500 hover:text-indigo-600 transition-colors">&times;</button>
+                <h2 id="modal-title" class="text-3xl font-bold text-slate-900"></h2>
+                <button id="close-modal-btn" class="text-3xl font-light text-slate-500 hover:text-amber-700 transition-colors">&times;</button>
             </div>
             <div id="modal-body" class="prose-custom max-w-none text-slate-700">
+                <!-- Modal content will be injected here -->
             </div>
         </div>
     </div>
+    
+    <!-- FOOTER START -->
+    <footer class="cafe-footer mt-12 py-6">
+        <div class="container mx-auto px-4 text-center">
+            <p class="text-sm font-light text-amber-100">© 2025 Cara Membuat "100 Resep Coffee Premium" Untuk Usaha Cafe dan UMKM.</p>
+        </div>
+    </footer>
+    <!-- FOOTER END -->
 
     <script>
         const recipes = [
-            { id: 1, name: "Espresso", category: "Espresso", ingredients: ["7-9 gram bubuk kopi (khusus espresso)", "25-40 ml air panas"], method: "Seduh bubuk espresso dalam tekanan tinggi selama 20-25 detik. Tekanan tinggi mutlak diperlukan untuk menghadirkan karakter dan lapisan crema berwarna coklat hazelnut.", fact: "Crema, lapisan padat berwarna coklat hazelnut, adalah tanda bahwa sebuah espresso dibuat dengan baik." },
-            { id: 2, name: "Ristretto", category: "Espresso", ingredients: ["Setengah shot espresso (sekitar 14-20 ml)"], method: "Ristretto dibuat kurang dari 20 detik dalam tekanan tinggi. Biasanya sebelum espresso disajikan sampai penuh, cangkir sudah langsung diambil.", fact: "Ristretto berasal dari bahasa Italia yang berarti 'terbatas' atau pendek, dan cenderung memiliki rasa yang lebih manis dan chocolaty." },
-            { id: 3, name: "Americano", category: "Espresso", ingredients: ["1 shot espresso", "170-285 ml air panas"], method: "Sajikan satu shot espresso, lalu segera tambahkan air panas setelahnya. Banyaknya air panas kembali ke selera masing-masing.", fact: "Nama Americano pada awalnya merupakan ejekan bagi orang-orang Amerika yang meminta agar espresso mereka dibuat menjadi lebih encer." },
-            { id: 4, name: "Long Black", category: "Espresso", ingredients: ["1-2 shots espresso", "2/3 cangkir air panas"], method: "Tuangkan sekitar 2/3 air panas ke dalam cangkir, setelahnya segera isi dengan espresso. Ini menjaga crema tetap utuh di atas.", fact: "Berbeda dengan Americano, Long Black dibuat dengan menuang espresso di atas air panas, sehingga memiliki bodi/karakter yang lebih kaya dan crema yang lebih tebal." },
-            { id: 5, name: "Doppio", category: "Espresso", ingredients: ["Double shots espresso (88 ml)"], method: "Doppio berarti espresso yang digandakan dua kali. Anda hanya perlu menambahkan shots espresso dua kali.", fact: "Doppio berasal dari bahasa Italia yang berarti 'dobel'." },
-            { id: 6, name: "Cappuccino", category: "Espresso + Susu", ingredients: ["1 shot espresso panas", "1/3 susu di-steam", "1/3 susu frothing (busa)"], method: "Tuangkan 1 shot espresso ke dalam cangkir. Masukkan susu yang sudah di-steam, lalu bubuhkan foam susu tebal di atasnya (biasanya sekitar 2 cm).", fact: "Pada cappuccino, kadar busa susu lebih banyak dan lebih tebal dibandingkan dengan susu steaming-nya." },
-            { id: 7, name: "Latte", category: "Espresso + Susu", ingredients: ["1 shot espresso", "2/3 susu steaming", "Sedikit foam susu"], method: "Tuangkan espresso ke dalam cangkir. Masukkan susu yang sudah di-steam, lalu tambahkan beberapa sendok foam susu tipis di atasnya.", fact: "Latte, dalam bahasa Italia berarti 'kopi dan susu'. Latte memiliki kadar susu steaming yang lebih banyak dan busa yang lebih tipis dari cappuccino." },
-            { id: 8, name: "Flat White", category: "Espresso + Susu", ingredients: ["1 shot espresso", "2 shots susu yang sudah di-steam"], method: "Seduh espresso ke cangkir. Panaskan susu (sekitar 62°C) lalu tuangkan langsung ke dalam espresso untuk menciptakan lapisan microfoam yang tipis dan velvety.", fact: "Minuman kopi yang berasal dari Selandia Baru ini perbedaannya dengan latte adalah tekstur susu yang lebih 'basah' dan velvety." },
-            { id: 9, name: "Cortado", category: "Espresso + Susu", ingredients: ["2 oz (59 ml) espresso", "1-2 oz (29-59 ml) susu"], method: "Steam susu. Masukkan espresso ke dalam cangkir. Setelahnya, tuangkan susu yang sudah di-steam ke dalam espresso dengan rasio 1:1 atau 1:2.", fact: "Cortado adalah kopi khas Spanyol yang namanya berarti 'memotong', karena susu 'memotong' intensitas espresso." },
-            { id: 10, name: "Macchiato", category: "Espresso + Susu", ingredients: ["Espresso (sesuai selera)", "Susu secukupnya untuk 'membuat titik'"], method: "Tuangkan espresso panas ke dalam cangkir. Tambahkan sedikit foam susu atau susu yang sudah di-froth ke atas espresso untuk menandainya.", fact: "Macchiato, dalam bahasa Italia berarti espresso yang 'ditandai' dengan setitik susu." },
-            { id: 11, name: "Café Bombón", category: "Espresso + Susu", ingredients: ["1/2 cup espresso", "1/2 cup susu kental manis (yang dipanaskan)"], method: "Isi bagian dasar gelas dengan susu kental manis panas. Setelahnya, tuangkan espresso panas secara perlahan di atasnya untuk menciptakan lapisan.", fact: "Café Bombón sangat populer di Valencia, Spanyol, dan menjadi salah satu menu yang wajib dicoba jika berkunjung ke sana." },
-            { id: 12, name: "Kopi Susu", category: "Kopi + Susu", ingredients: ["1 sdm bubuk kopi", "3 sdm susu kental", "Gula (sesuai selera)"], method: "Masukkan bubuk kopi dalam gelas, tambahkan air panas. Setelahnya masukkan susu kental manis, aduk hingga merata. Tambahkan gula jika suka.", fact: "Kopi susu adalah minuman yang sangat populer di Asia Tenggara, terutama Indonesia dan Malaysia, sebagai minuman sehari-hari." },
-            { id: 13, name: "Ca Phe Sua Da", category: "Kopi + Susu", ingredients: ["2 sdm susu kental manis", "2 sdm bubuk kopi (sekitar 30 gram)", "Kubus es secukupnya"], method: "Gunakan Vietnam dripper untuk menyeduh kopi langsung di atas gelas berisi susu kental manis. Aduk rata, lalu tuang ke gelas lain yang berisi es.", fact: "Ca phe sua da adalah kopi dingin khas Vietnam yang menyegarkan, disajikan bersama campuran susu kental manis." },
-            { id: 14, name: "Café Au Lait", category: "Kopi + Susu", ingredients: ["4 sdm kopi seduh", "1 cup susu panas", "Gula (jika suka)"], method: "Seduh kopi. Panaskan susu sampai hampir mendidih. Tuangkan kopi dan susu panas secara bersamaan ke dalam cangkir besar atau mug.", fact: "Dalam bahasa Prancis, 'Café Au Lait' secara harfiah berarti 'kopi dengan susu', dan secara tradisional menggunakan kopi seduh (bukan espresso)." },
-            { id: 15, name: "Espresso con Panna", category: "Dengan Krim", ingredients: ["2 oz espresso (59 ml)", "1 sdt gula", "2 sdt whipped cream"], method: "Tuangkan espresso panas ke dalam cangkir. Tambahkan gula, aduk rata. Setelahnya, tambahkan whipped cream di atasnya.", fact: "Espresso con panna berarti 'espresso dengan krim' dalam bahasa Italia. Di AS, ini disebut café Vienne, sementara di Prancis disebut café Viennois." },
-            { id: 16, name: "Vienna Coffee", category: "Dengan Krim", ingredients: ["3 single shots (90 ml) kopi/espresso panas", "1/2 cup whipped cream", "1/2 sdt bubuk cocoa atau cinnamon"], method: "Tuangkan espresso atau kopi ke dalam cangkir. Tambahkan whipped cream di atasnya. Taburi dengan bubuk cocoa atau cinnamon.", fact: "Kopi Vienna adalah minuman kopi tradisional yang kuat, seringkali disamakan dengan Espresso con Panna, dan dilunakkan dengan whipped cream." },
-            { id: 17, name: "Red Eye", category: "Dengan Kopi Lain", ingredients: ["1 cup kopi", "1 shot espresso"], method: "Seduh kopi langsung ke dalam cangkir. Setelahnya tuang satu shot espresso panas di atasnya.", fact: "Nama 'red eye' konon berasal dari kebiasaan orang-orang yang butuh asupan kafein tambahan untuk tetap terjaga selama penerbangan malam dari West Coast ke New York." },
-            { id: 18, name: "Black Eye", category: "Dengan Kopi Lain", ingredients: ["2 shots espresso (atau lebih)", "1 cup kopi"], method: "Seduh kopi ke dalam cangkir. Lalu tuang dua shots espresso panas di atasnya. Kadar kafeinnya lebih kuat dari Red Eye.", fact: "Jika Red Eye dicampur dengan 1 shot espresso, maka Black Eye dicampur dengan 2 shots atau lebih, membuatnya jauh lebih kuat." },
-            { id: 19, name: "Black Tie", category: "Dengan Teh", ingredients: ["1 cangkir black tea", "2 shots espresso", "1 sdm susu kental/cream", "Rempah (air bunga jeruk, bunga lawang, tamarind)"], method: "Buat teh dengan rempah lalu dinginkan. Tuang teh ke dalam gelas berisi es, tambahkan espresso, dan lapisi atasnya dengan susu kental secara perlahan.", fact: "Black Tie merupakan minuman tradisional khas Thailand yang terdiri dari campuran teh hitam, espresso, dan berbagai rempah eksotis." },
-            { id: 20, name: "Chai Latte", category: "Dengan Teh", ingredients: ["1 kantong teh Chai", "1/2 cangkir air panas", "1/3 cangkir espresso/kopi kuat", "1/3 cangkir susu", "Kayu manis & Gula"], method: "Seduh teh, tuangkan espresso. Panaskan dan busakan susu, lalu tuang ke atas minuman. Hias dengan kayu manis.", fact: "Chai Latte adalah interpretasi dari Masala Chai India, menggabungkan rempah-rempah teh dengan tekstur creamy dari latte." },
-            { id: 21, name: "Irish Coffee", category: "Dengan Liquor", ingredients: ["1 cup kopi panas", "1 sdm gula merah", "1 jigger (3 sdm) whiskey Irlandia", "Whipped cream"], method: "Panaskan mug, tuang kopi panas, larutkan gula merah. Campurkan dengan whiskey, lalu bubuhkan whipped cream di atasnya tanpa diaduk.", fact: "Irish Coffee diciptakan pada tahun 1940-an oleh Joe Sheridan, seorang chef di Pelabuhan Foynes, Irlandia, untuk menghangatkan penumpang pesawat amfibi trans-Atlantik." },
-            { id: 22, name: "Espresso Martini", category: "Dengan Liquor", ingredients: ["2-4 oz espresso dingin", "1-2 oz vanilla-flavored vodka", "6-8 ice cubes", "Sedikit half-and-half"], method: "Tuangkan semua komposisi bahan dalam shaker khusus martini. Guncangkan dengan kuat selama 15 detik, lalu saring dan tuangkan ke dalam gelas martini dingin.", fact: "Minuman ini konon diciptakan oleh bartender Dick Bradsell di London pada akhir 1980-an ketika seorang model terkenal memintanya membuat minuman yang akan 'membangunkanku, lalu mengacaukanku'." },
-            { id: 23, name: "Espresso Spritzer", category: "Dengan Soda", ingredients: ["1 cup (250 ml) espresso dingin", "6 oz (170 gram) crushed ice", "Air mineral berkarbonasi atau air soda"], method: "Masukkan crushed ice ke dalam gelas panjang dingin. Tuangkan espresso ke atasnya. Isi sisanya dengan air soda dan aduk perlahan.", fact: "Sebelum penemuan minuman bersoda modern, sangat populer di bar Italia dan kafe Eropa untuk memesan minuman yang terbuat dari kopi dan sparkling water." },
-            { id: 24, name: "Cola Coffee", category: "Dengan Soda", ingredients: ["1 cup (250 ml) espresso dingin", "4 oz (113 ml) cola", "4 ice cubes", "1 irisan lemon"], method: "Masukkan es ke dalam gelas panjang. Tuangkan kopi dan cola ke dalamnya secara bersamaan. Hias dengan irisan lemon.", fact: "Konsep kopi dengan soda sudah dikenal sejak tahun 1920-an. Pada tahun 1996, Pepsi bahkan mencoba memproduksi minuman bernama 'Pepsi Kona'." },
-            { id: 25, name: "Pumpkin Spice Latte", category: "Latte & Rempah", ingredients: ["1 shot espresso", "Susu di-steam", "2 pumps sirup pumpkin", "1 pump sirup vanilla", "Whipped cream & Cinnamon"], method: "Tuangkan espresso ke cangkir, masukkan susu steam dan sirup. Tambahkan whipped cream dan taburan cinnamon.", fact: "Minuman ini menjadi fenomena budaya, terutama di musim gugur di Amerika Utara, dan dipopulerkan oleh Starbucks." },
-            { id: 26, name: "Café de Olla", category: "Berperisa", ingredients: ["6 cups air", "2/3 cup bubuk kopi", "1 batang kayu manis", "4 sdm gula merah (piloncillo)"], method: "Panaskan air sampai mendidih, masukkan kopi, cinnamon, dan gula. Panaskan 30 detik lagi, aduk rata, lalu sajikan.", fact: "Café de Olla adalah cara tradisional membuat kopi di Meksiko, yang secara harfiah berarti 'kopi dari panci tanah liat', tempat minuman ini secara tradisional disiapkan." },
-            { id: 27, name: "Café Mocha", category: "Berperisa", ingredients: ["8 oz espresso/kopi kuat", "2 sdm hot chocolate", "1/2 cangkir susu di-froth", "Whipped cream & Bubuk cocoa"], method: "Masukkan kopi dan hot chocolate ke dalam mug besar, aduk rata. Tuang susu yang sudah di-froth, hias dengan whipped cream dan taburan cocoa.", fact: "Nama 'Mocha' berasal dari pelabuhan Al Mokka di Yaman, yang merupakan pusat utama perdagangan kopi dari abad ke-15 hingga ke-18. Biji kopi dari wilayah ini memiliki rasa cokelat alami." },
-            { id: 28, name: "Greek Frappe Coffee", category: "Dingin", ingredients: ["3-4 sdt kopi instan", "2-4 sdt gula", "Air dan susu dingin", "Es"], method: "Campurkan kopi instan, gula, dan sedikit air dalam shaker. Guncangkan dengan kuat hingga berbusa. Tuang ke dalam gelas berisi es, lalu tambahkan sisa air dan/atau susu.", fact: "Greek Frappe ditemukan secara tidak sengaja pada tahun 1957 di Thessaloniki International Fair oleh seorang perwakilan Nestlé yang tidak dapat menemukan air panas untuk kopinya." },
-            { id: 29, name: "Japanese Iced Coffee", category: "Dingin", ingredients: ["4 sdm bubuk kopi", "230 gram air panas", "8 ice cubes"], method: "Seduh kopi dengan metode pour-over (seperti V60) langsung di atas server yang sudah diisi dengan es batu. Air panas yang mengekstrak kopi akan langsung didinginkan oleh es.", fact: "Metode ini 'mengunci' rasa dan aroma kopi yang lebih kompleks dan cerah, yang seringkali hilang saat mendinginkan kopi panas secara perlahan." },
-            { id: 30, name: "Affogato", category: "Lainnya", ingredients: ["2 sendok kecil es krim vanilla atau coklat", "1 shot espresso panas", "Irisan dark chocolate & Hazelnut cincang (opsional)"], method: "Masukkan dua sendok es krim ke dalam cangkir atau mangkuk. Tuangkan satu shot espresso panas langsung ke atasnya. Sajikan segera.", fact: "Affogato, dalam bahasa Italia, berarti 'tenggelam', menggambarkan es krim yang 'tenggelam' di dalam espresso panas." },
-            { id: 31, name: "Nitro Coffee", category: "Lainnya", ingredients: ["16 oz (500 ml) kopi cold brew", "1 shot nitrogen"], method: "Infusikan kopi cold brew dengan gas nitrogen di dalam dispenser khusus. Proses ini memberikan kopi tekstur yang creamy dan busa yang tebal, mirip seperti bir stout.", fact: "Nitro coffee memiliki rasa yang lebih manis secara alami dan tingkat keasaman yang lebih rendah dibandingkan kopi biasa, seringkali tidak memerlukan tambahan gula atau susu." },
+            { id: 1, name: "Espresso", category: "Espresso Dasar", ingredients: ["7-9 gram bubuk kopi (khusus espresso)", "25-40 ml air panas"], method: "Seduh bubuk espresso dalam tekanan tinggi selama 20-25 detik.", fact: "Crema, lapisan padat berwarna coklat hazelnut, adalah tanda bahwa sebuah espresso dibuat dengan baik." },
+            { id: 2, name: "Ristretto", category: "Espresso Dasar", ingredients: ["Setengah shot espresso (sekitar 14-20 ml)"], method: "Ristretto dibuat kurang dari 20 detik dalam tekanan tinggi.", fact: "Ristretto berasal dari bahasa Italia yang berarti 'terbatas' atau pendek, dan cenderung memiliki rasa yang lebih manis dan chocolaty." },
+            { id: 3, name: "Americano", category: "Espresso Dasar", ingredients: ["1 shot espresso", "170-285 ml air panas"], method: "Sajikan satu shot espresso, lalu segera tambahkan air panas setelahnya.", fact: "Nama Americano pada awalnya merupakan ejekan bagi orang-orang Amerika yang meminta agar espresso mereka dibuat menjadi lebih encer." },
+            { id: 4, name: "Long Black", category: "Espresso Dasar", ingredients: ["1-2 shots espresso", "2/3 cangkir air panas"], method: "Tuangkan sekitar 2/3 air panas ke dalam cangkir, setelahnya segera isi dengan espresso.", fact: "Berbeda dengan Americano, Long Black dibuat dengan menuang espresso di atas air panas, sehingga memiliki bodi/karakter yang lebih kaya." },
+            { id: 5, name: "Café Zorro", category: "Espresso Dasar", ingredients: ["2 shots espresso/doppio", "1 shot air panas"], method: "Dua shots espresso ditambahkan satu shot air panas.", fact: "Rasanya sangat kuat, tetapi sebanding dengan aromanya yang sangat harum dan nikmat jika dibuat dengan komposisi yang benar." },
+            { id: 6, name: "Guillermo", category: "Espresso Dasar", ingredients: ["1-2 shots espresso", "1 iris potongan lemon"], method: "Dicampurkan langsung dengan espresso, lemon dimasukkan dan direndam ke dalamnya. Kandungan citrus dipercaya bisa menurunkan kadar kafein.", fact: "Orang-orang Italia biasanya memasukkan potongan lemon ini terlebih dahulu sebagai dasar di dalam cangkir." },
+            { id: 7, name: "Doppio", category: "Espresso Dasar", ingredients: ["Double shots espresso (88 ml)"], method: "Doppio berarti espresso yang dilipat-gandakan dua kali (88 ml).", fact: "Doppio berasal dari bahasa Italia yang berarti 'dobel'." },
+            { id: 8, name: "Espresso Romano", category: "Espresso Dasar", ingredients: ["1 shot espresso", "1 iris potongan lemon"], method: "Satu iris potongan lemon disajikan bersama espresso, biasanya diletakkan di bibir cangkir. ", fact: "Kandungan citrus dari potongan lemon ini dipercaya bisa semakin menguarkan karakter espresso semakin kuat." },
+            { id: 9, name: "Schwarzer", category: "Espresso Dasar", ingredients: ["7/14 gram bubuk espresso", "3/6 cl air"], method: "Hampir mirip dengan Americano, namun long black biasanya memiliki bodi/karakter yang lebih kaya. Tuangkan 2/3 air panas ke dalam cangkir, setelahnya segera isi dengan espresso.", fact: "Schwarzer secara harfiah berarti 'hitam' dalam bahasa Jerman, mirip Americano tetapi disajikan dengan proporsi yang berbeda di beberapa kafe." },
+            { id: 10, name: "Café Cubano", category: "Espresso Dasar", ingredients: ["Satu moka pot espresso", "X cangkir gula"], method: "Kocok gula dan 1 sdt espresso panas sampai membentuk buih (espumita). Tuang dan aduk ke dalam sisa espresso panas.", fact: "Inti Café Cubano adalah espresso yang ditambahkan sedikit gula agar rasanya tidak terlalu 'keras'." },
+            { id: 11, name: "Cappuccino", category: "Espresso + Susu", ingredients: ["1 shot espresso panas", "1/3 susu di-steam", "1/3 susu froathing (busa)"], method: "Tuangkan 1 shot espresso. Masukkan susu di-steam, lalu bubuhkan foam susu tebal (sekitar 2 cm) di atasnya.", fact: "Pada cappuccino, kadar busa susu lebih banyak dan lebih tebal dibandingkan dengan susu steaming-nya." },
+            { id: 12, name: "Cortado", category: "Espresso + Susu", ingredients: ["2 oz espresso", "1-2 oz susu"], method: "Steam 1-2 oz susu. Masukkan espresso, tuangkan susu steam. Tambahkan foam jika suka.", fact: "Cortado, kopi khas Spanyol ini juga sering disebut pingo atau garoto dan biasanya disajikan dalam gelas jus yang panjang." },
+            { id: 13, name: "Breve Blast", category: "Espresso + Susu", ingredients: ["2 oz espresso", "1 oz sirup vanilla", "4 oz susu"], method: "Panaskan espresso, tambahkan sirup vanilla. Sebagai 'topping', tambahkan susu yang sudah didinginkan di atasnya.", fact: "Breve Blast adalah variasi latte dengan krim atau susu yang lebih kaya, dipermanis dengan sirup vanilla." },
+            { id: 14, name: "Latte", category: "Espresso + Susu", ingredients: ["1 shot espresso", "2/3 susu steaming", "Sedikit foam susu"], method: "Tuangkan espresso. Masukkan susu yang sudah di-steam, lalu tambahkan beberapa sendok penuh foam susu.", fact: "Latte memiliki kadar susu steaming yang lebih banyak dan busa yang lebih tipis dari cappuccino." },
+            { id: 15, name: "Flat White", category: "Espresso + Susu", ingredients: ["1 shot espresso", "2 shots susu yang sudah di-steam"], method: "Brew espresso, tuangkan ke cangkir. Panaskan susu (62°C). Tuangkan susu steam langsung ke dalam espresso.", fact: "Minuman kopi yang berasal dari Selandia Baru ini perbedaannya dengan latte hanya tekstur susu yang di-steam dan takaran shots espresso." },
+            { id: 16, name: "Espressino", category: "Espresso + Susu", ingredients: ["Nutella", "Double shots espresso panas", "2 oz susu di-steam", "Bubuk coklat"], method: "Oleskan nutella di cup, percikkan bubuk coklat. Tuang espresso, lalu masukkan susu steam.", fact: "Minuman ini adalah kreasi yang kaya, memadukan espresso, hazelnut, dan cokelat dalam satu cangkir kecil." },
+            { id: 17, name: "Galão", category: "Espresso + Susu", ingredients: ["1/4 cup espresso", "3/4 cup susu", "(Sedikit gula jika perlu)"], method: "Tuangkan espresso sampai 1/4 cangkir. Tambahkan susu yang sudah di-steam sebanyak 3/4 cup.", fact: "Galão adalah minuman khas Portugis yang mirip latte, disajikan dalam gelas berukuran tinggi, umumnya untuk sarapan atau brunch." },
+            { id: 18, name: "Macchiato", category: "Espresso + Susu", ingredients: ["Espresso (banyaknya shots tergantung selera)", "Susu secukupnya untuk 'membuat titik'"], method: "Tuangkan espresso panas. Tambahkan sedikit foam susu atau susu yang sudah di-froth ke atas espresso untuk memarkahinya.", fact: "Macchiato, dalam bahasa Italia berarti espresso yang 'ditandai' dengan setitik susu." },
+            { id: 19, name: "Antoccino", category: "Espresso + Susu", ingredients: ["1 shot espresso", "1 shot steamed susu"], method: "Satu shot espresso yang ditambahkan steamed susu dengan rasio sama, 1:1. Sajikan di cangkir espresso.", fact: "Antoccino adalah versi yang lebih kecil dan intens dari Cortado, menekankan kesetaraan rasio." },
+            { id: 20, name: "Wiener", category: "Espresso + Susu", ingredients: ["1 shot espresso (cup besar)", "susu creamy", "Froth susu (topping)"], method: "Tuang espresso, steam susu lalu masukkan. Tambahkan frothed susu di atasnya sebagai topping.", fact: "Wiener (mélange) adalah kopi khas Jerman yang mirip cappuccino, seringkali dibuat dengan espresso yang kadarnya lebih mild." },
+            { id: 21, name: "Gibraltar", category: "Espresso + Susu", ingredients: ["2 oz espresso", "1-2 oz susu"], method: "Panaskan espresso, tuangkan. Steam susu, tuangkan ke dalam espresso. Sajikan dalam gelas Gibraltar.", fact: "Gibraltar adalah ramuan kopi khas Amerika, mirip Cortado, namun disajikan dalam gelas Libbey 'Gibraltar' ukuran kecil." },
+            { id: 22, name: "Breve", category: "Espresso + Susu", ingredients: ["1/3 cup espresso", "2/3 cup half-and-half cream"], method: "Tuangkan espresso sampai 1/3 cangkir. Masukkan campuran susu dan cream (50:50) yang sudah di-steamed.", fact: "Caffé Breve adalah variasi latte versi Amerika yang menggunakan half-and-half (setengah krim, setengah susu) alih-alih susu murni." },
+            { id: 23, name: "Café Bombón", category: "Espresso + Susu", ingredients: ["1/2 cup espresso", "1/2 cup susu kental (dipanaskan)"], method: "Isi bagian dasar gelas dengan susu kental yang dipanaskan. Setelahnya, tuangkan espresso panas di atasnya untuk menciptakan lapisan.", fact: "Sangat popular di Valencia, Spanyol, dan merupakan salah satu menu yang wajib dicoba." },
+            { id: 24, name: "Egg Coffee", category: "Kopi + Susu", ingredients: ["1 butir telur (kuningnya)", "3 sdt bubuk kopi", "2 sdt (36 ml) susu kental manis"], method: "Seduh kopi. Kocok kuning telur dan SKM hingga membentuk foam. Tuangkan adonan itu di atas kopi.", fact: "Kopi telur adalah kopi tradisional khas Vietnam, sering menggunakan bubuk robusta dan diseduh dengan Vietnam dripper." },
+            { id: 25, name: "Ca Phe Sua Nong", category: "Kopi + Susu", ingredients: ["17-20 gram bubuk kopi", "2 sdm SKM", "Air panas (88°C)"], method: "Tuangkan SKM di gelas. Gunakan Vietnam dripper. Tuangkan air panas. Aduk rata.", fact: "Versi panas dari ca phe sua da, komposisinya serupa tetapi menggunakan air panas alih-alih es." },
+            { id: 26, name: "Ca Phe Sua Da", category: "Kopi + Susu", ingredients: ["2 sdm susu kental manis", "2 sdm bubuk kopi", "Kubus es secukupnya"], method: "Seduh kopi dalam Vietnam dripper di atas gelas berisi SKM. Aduk rata. Tuang ke dalam gelas berisi es.", fact: "Kopi dingin khas Vietnam yang menyegarkan, disajikan bersama campuran susu kental manis." },
+            { id: 27, name: "Café Au Lait", category: "Kopi + Susu", ingredients: ["4 sdm kopi seduh", "1 cup air", "1/2 cup susu", "Gula"], method: "Seduh kopi. Panaskan susu. Tuangkan kopi dan susu panas secara bersamaan ke cangkir besar.", fact: "Secara tradisional menggunakan kopi seduh (bukan espresso) yang dicampur susu panas." },
+            { id: 28, name: "Kopi Susu", category: "Kopi + Susu", ingredients: ["1 sdm bubuk kopi", "3 sdm susu kental", "Gula (sesuai selera)"], method: "Masukkan bubuk kopi, tambahkan air panas. Masukkan susu kental manis, aduk hingga merata.", fact: "Minuman kopi yang sangat populer di Asia Tenggara sebagai minuman sehari-hari." },
+            { id: 29, name: "White Coffee", category: "Kopi + Susu", ingredients: ["1/2 cangkir half-and-half", "2 cangkir kopi panas", "85 gram white chocolate (opsional)"], method: "Panaskan half-and-half (dan white chocolate). Seduh kopi. Tuangkan kopi ke dalam campuran panas tadi.", fact: "Mengacu kopi hitam yang menambahkan campuran susu, krim, white chocolate, atau 'bahan berwarna putih' lainnya." },
+            { id: 30, name: "White Coffee (Inggris)", category: "Kopi + Susu", ingredients: ["4 sdm kopi", "1/2 cup susu (suhu ruang)"], method: "Seduh kopi dengan air panas. Tuangkan kopi dan susu (suhu ruang) secara bersamaan.", fact: "Di Inggris, white coffee menggunakan susu dengan suhu ruang, bukan susu yang di-steam atau dipanaskan seperti café au lait." },
+            { id: 31, name: "Vienna Coffee", category: "Kopi + Krim", ingredients: ["3 single shots kopi/espresso panas", "1/2 cup air mendidih", "1/2 cup whipped cream", "bubuk cocoa/cinnamon"], method: "Tuangkan kopi/espresso, tambahkan whipped cream. Percikkan bubuk cocoa/cinnamon.", fact: "Minuman kopi tradisional yang kuat, kadang disajikan dalam gelas demitasse." },
+            { id: 32, name: "Espresso con Panna", category: "Kopi + Krim", ingredients: ["2 oz espresso", "1/2 sdt gula", "2 sdt whipped cream"], method: "Tuangkan espresso panas. Tambahkan gula, aduk. Tambahkan whipped cream.", fact: "Berarti 'espresso dengan krim' dalam bahasa Italia. Di Amerika disebut café Vienne." },
+            { id: 33, name: "Italian Delight Espresso", category: "Kopi + Krim", ingredients: ["2-4 oz espresso panas/kopi strong", "1/4-1/2 oz amaretto/sirup almond", "1/2-1 oz sambuca (opsional)", "Whipped cream"], method: "Tuangkan amaretto ke mug kaca. Tambahkan espresso. Sempurnakan dengan whipped cream.", fact: "Merupakan salah satu minuman manis beraroma kacang almond dan sering disajikan di Italia." },
+            { id: 34, name: "Espresso Whipped Cream", category: "Kopi + Krim", ingredients: ["1 cup heavy whipped cream", "1 sdt bubuk espresso", "1 sdt ekstrak vanilla", "3 sdm gula merah"], method: "Campurkan semua bahan dalam wadah. Aduk hingga rata. Dinginkan.", fact: "Cream ini bisa disajikan langsung atau sebagai topping di atas espresso cold brew." },
+            { id: 35, name: "Red Eye", category: "Kopi + Espresso", ingredients: ["1 cup kopi", "1 shot espresso"], method: "Seduh kopi. Tuang satu shot espresso panas di atasnya.", fact: "Nama 'red eye' konon berasal dari kebiasaan orang yang butuh asupan kafein tambahan saat penerbangan malam." },
+            { id: 36, name: "Canadiano", category: "Kopi + Espresso", ingredients: ["1 shot espresso", "1 cup kopi"], method: "Tuangkan 1 shot espresso panas terlebih dahulu, baru masukkan 1 cup kopi di atasnya.", fact: "Pada dasarnya kebalikan dari Red Eye, di mana espresso dituang pertama kali sebelum kopi seduh." },
+            { id: 37, name: "Black Eye", category: "Kopi + Espresso", ingredients: ["2 shots espresso (atau lebih)", "1 cup kopi"], method: "Seduh kopi. Lalu tuang dua shots espresso panas di atasnya.", fact: "Kadar kafein Black Eye jauh lebih kuat dari Red Eye." },
+            { id: 38, name: "Black Tie", category: "Kopi + Teh", ingredients: ["1 cangkir black tea", "Air bunga jeruk", "Bunga lawang", "Tamarind", "1/4 cup gula", "1 sdm susu kental/cream", "2 shots espresso"], method: "Buat teh dengan rempah, dinginkan. Tuang teh dingin ke gelas berisi es, tambahkan espresso, lapisi atasnya dengan susu kental.", fact: "Minuman tradisional khas Thailand yang terdiri dari campuran teh hitam, espresso, dan rempah eksotis." },
+            { id: 39, name: "Chai Latte", category: "Kopi + Teh", ingredients: ["1 kantong teh Chai", "1/2 cangkir air panas/mendidih", "1/2 cangkir espresso/kopi strong", "1/3 cangkir susu", "Kayu manis", "Gula"], method: "Seduh teh, tuangkan espresso. Frothing susu. Tuangkan susu, sendok busanya di atas minuman. Hias dengan kayu manis.", fact: "Interpretasi dari Masala Chai India, menggabungkan rempah-rempah teh dengan tekstur creamy dari latte." },
+            { id: 40, name: "Yuanyang", category: "Kopi + Teh", ingredients: ["3 cangkir air", "1/4 cangkir daun black tea", "12 oz susu kental", "Gula", "3 shots espresso/kopi strong"], method: "Rebus daun teh hitam 3 menit. Masukkan susu, didihkan 3 menit lagi. Tuang espresso. Sajikan.", fact: "Minuman populer di Hong Kong, namanya mengacu pada bebek mandarin, simbol cinta dalam budaya Tionghoa." },
+            { id: 41, name: "Liqueur Coffee", category: "Kopi + Liquor", ingredients: ["4 cups gula putih", "4 cups air", "1/4 cup bubuk kopi", "2 sdm ekstrak vanilla", "4 cups vodka"], method: "Campurkan gula dan air, didihkan. Dinginkan. Masukkan ekstrak vanilla dan vodka.", fact: "Kopi yang diseduh bersama 25 ml shot liqueur, sering disajikan dalam gelas liqueur yang dipanaskan." },
+            { id: 42, name: "Irish Coffee", category: "Kopi + Liquor", ingredients: ["1 cup kopi panas", "1 sdm gula merah", "1 jigger whiskey", "Whipped cream"], method: "Tuang kopi panas ke mug hangat. Tambahkan gula merah. Campurkan dengan whiskey. Bubuhkan whipped cream di atasnya.", fact: "Diciptakan untuk menghangatkan penumpang pesawat amfibi trans-Atlantik di Irlandia pada tahun 1940-an." },
+            { id: 43, name: "Rüdesheimer Kaffee", category: "Kopi + Liquor", ingredients: ["40 ml Asbach Uralt", "3 cubes gula", "1 cup kopi", "Whipped cream", "Coklat serut"], method: "Masukkan gula dan Asbach Uralt. Aduk hingga larut. Tuang kopi panas. Bubuhkan whipped cream dan coklat serut.", fact: "Ditemukan oleh chef Jerman Hans Karl Adam pada 1957, menggunakan brandy khas Jerman, Asbach Uralt." },
+            { id: 44, name: "Pharisäer Coffee", category: "Kopi + Liquor", ingredients: ["2-4 oz kopi strong", "1 jigger (40 ml) rum", "Whipped cream", "Sugar cubes"], method: "Tuangkan kopi panas, masukkan gula dan rum. Tambahkan whipped cream di atasnya. (Menurut tradisi, tidak boleh diaduk).", fact: "Minuman kopi beralkohol yang populer di Jerman, terdiri dari kopi hitam, rum, dan dihiasi whipped cream." },
+            { id: 45, name: "Carajillo", category: "Kopi + Liquor", ingredients: ["1/2 cup espresso/kopi strong", "1-2 oz brandy/rum", "Ice cubes"], method: "Dalam gelas kaca, masukkan es. Tuangkan brandy/rum. Masukkan espresso secara perlahan untuk berlayer.", fact: "Minuman khas Spanyol yang konon bisa menstimulasi seseorang sehingga lebih berani (berasal dari kata 'corajillo' atau 'courage')." },
+            { id: 46, name: "Electric Espresso", category: "Kopi + Liquor", ingredients: ["1/2 oz dark crème de cacao liqueur", "1/2 oz white crème de cacao liqueur", "4 oz espresso panas", "Whipped cream"], method: "Tuangkan semua liqueur ke mug cappuccino. Masukkan espresso panas. Tambahkan whipped cream.", fact: "Kreasi kopi manis yang menggunakan dua jenis liqueur coklat untuk rasa yang lebih kompleks." },
+            { id: 47, name: "Coffee Champagne", category: "Kopi + Liquor", ingredients: ["1.5 oz espresso dingin", "2.5 oz coffee-flavored vodka", "Sedikit champagne", "Irisan lemon (garnish)"], method: "Dinginkan gelas martini. Tuangkan kopi dan vodka. Tuangkan champagne. Aduk. Bubuhkan irisan lemon.", fact: "Konon, Frederick the Great dari Kerajaan Prussia memiliki kebiasaan menyeduh kopinya dengan champagne." },
+            { id: 48, name: "Espresso Martini", category: "Kopi + Liquor", ingredients: ["2-4 oz espresso dingin", "1-2 oz vanilla-flavored vodka", "6-8 ice cubes", "Sedikit half-and-half"], method: "Tuangkan semua bahan dalam shaker dengan es. Guncangkan 15 detik. Tuangkan ke gelas martini dingin.", fact: "Diciptakan oleh bartender Dick Bradsell di London pada akhir 1980-an." },
+            { id: 49, name: "Irish Coffee Martini", category: "Kopi + Liquor", ingredients: ["1 oz espresso dingin", "1 oz Irish cream liqueur", "1/4 oz white crème de menthe liqueur", "8 ice cubes", "Bubuk espresso (garnish)"], method: "Masukkan semua bahan dan es dalam shaker. Guncangkan. Tuangkan ke gelas martini dingin. Percikkan bubuk espresso.", fact: "Menggabungkan rasa Irish Coffee dengan format cocktail Martini." },
+            { id: 50, name: "White Russian Espresso Martini", category: "Kopi + Liquor", ingredients: ["1.5 oz premium vodka", "1.5 oz coffee-flavored liqueur", "1.5 oz espresso dingin", "3 oz light cream/half-and-half", "6 ice cubes"], method: "Campurkan vodka dan coffee liqueur dalam shaker dengan es. Tuangkan. Tambahkan espresso dingin, bubuhkan cream di atasnya.", fact: "Minuman ini 'mengambil nama Russian' karena tambahan vodka, meski tidak terkenal di Rusia." },
+            { id: 51, name: "Russian Espresso", category: "Kopi + Liquor", ingredients: ["1 part espresso vodka", "1 part Kahlúa", "1 part half-and-half", "Ice cubes"], method: "Campurkan semua bahan dalam shaker. Masukkan es ke rock glass. Tuangkan minuman.", fact: "Versi lain dari White Russian yang fokus pada kekuatan espresso dan Kahlúa." },
+            { id: 52, name: "Coffee Sands", category: "Kopi + Liquor", ingredients: ["4 ice cubes", "2 oz espresso dingin", "1 oz sirup/liqueur white crème de cacao", "1 oz sirup/liqueur kopi", "1 oz coffee cream liqueur/half-and-half"], method: "Masukkan es. Tuangkan espresso. Perlahan-lahan, tuangkan sirup/liqueur satu per satu. Aduk lembut.", fact: "Minuman berlayer yang manis dan kaya rasa, ideal disajikan dalam brandy snifter." },
+            { id: 53, name: "Vanilla Espressotini", category: "Kopi + Liquor", ingredients: ["2 oz espresso dingin", "1 oz coffee-flavored-liqueur", "1 oz Irish cream liqueur", "1 oz vanilla-flavored vodka", "8 ice cubes", "Bubuk coklat (garnish)"], method: "Masukkan semua bahan dan es dalam martini shaker. Guncangkan. Tuangkan ke gelas martini dingin. Percikkan bubuk coklat.", fact: "Menggabungkan empat jenis minuman beralkohol dan kopi untuk rasa yang kompleks." },
+            { id: 54, name: "Espresso Spritzer", category: "Kopi + Soda", ingredients: ["1 cup espresso dingin", "6 oz crushed ice", "Air mineral berkarbonasi/soda"], method: "Masukkan crushed ice ke gelas panjang dingin. Tuangkan espresso. Isi sisanya dengan air soda. Aduk perlahan.", fact: "Sebelum penemuan minuman bersoda modern, populer di Eropa memesan minuman dari kopi dan sparkling water." },
+            { id: 55, name: "Cola Coffee", category: "Kopi + Soda", ingredients: ["1 cup espresso dingin", "4 oz cola soft drink", "4 ice cubes", "1 irisan lemon"], method: "Masukkan es. Tuangkan kopi dan cola. Hias dengan irisan lemon.", fact: "Konsep kopi dengan soda sudah dikenal sejak tahun 1920-an. Pepsi pernah mencoba memproduksi 'Pepsi Kona' pada tahun 1996." },
+            { id: 56, name: "Spiced Cola Coffee", category: "Kopi + Soda", ingredients: ["4 oz espresso panas", "1 batang kayu manis", "3 biji kapulaga", "2 bunga lawang", "1 sdt simple sugar syrup", "3-4 ice cubes", "3 oz coca cola"], method: "Seduh kopi panas dengan rempah 4 menit. Saring rempah. Tambahkan syrup. Masukkan kopi dingin ke gelas. Masukkan cola.", fact: "Menambahkan elemen rempah-rempah eksotis ke dalam kombinasi kopi dan cola." },
+            { id: 57, name: "Eggnog Latte", category: "Latte + Rempah", ingredients: ["2 shots espresso/kopi strong", "2/3 cup eggnog", "1/3 cup susu", "Gula", "Whipped cream", "Bubuk coklat/pala"], method: "Tuangkan espresso/kopi ke mug, tambahkan eggnog dan susu steam. Aduk. Sempurnakan dengan whipped cream.", fact: "Minuman liburan populer yang memadukan espresso dengan rasa kaya dari eggnog (kuning telur kocok)." },
+            { id: 58, name: "Black Forest Latte", category: "Latte + Rempah", ingredients: ["1.5 oz sirup coklat/crème de cacao", "1 oz sirup raspberry", "2 oz espresso/kopi strong", "4-6 oz susu steam", "Whipped cream"], method: "Tuangkan sirup coklat dan raspberry ke mug. Masukkan espresso. Isi sisa gelas dengan susu steam. Lapisi dengan whipped cream.", fact: "Terinspirasi dari kue Black Forest yang terkenal, dengan rasa coklat dan raspberry." },
+            { id: 59, name: "Toffee Coffee Latte", category: "Latte + Rempah", ingredients: ["1/4 oz sirup pisang", "1/4 oz sirup hazelnut", "1/4 oz sirup caramel", "2 oz espresso/kopi strong", "5-6 oz susu steam", "Bubuk hazelnut"], method: "Tuangkan ketiga sirup ke mug. Tambahkan espresso kemudian susu steam. Aduk. Percikkan bubuk hazelnut.", fact: "Kombinasi rasa yang kompleks dari pisang, hazelnut, dan karamel, memberikan pengalaman rasa permen toffee." },
+            { id: 60, name: "Latte Macchiato", category: "Latte + Rempah", ingredients: ["1 shot espresso", "Susu yang sudah di-steam", "Foam susu"], method: "Isi cangkir dengan susu steam. Tambahkan foam. Tuang satu shot espresso di atas foam (untuk membentuk layer).", fact: "Secara harfiah berarti 'susu yang ditandai'. Layer dibuat dengan menuang espresso ke dalam susu, bukan sebaliknya." },
+            { id: 61, name: "Latte Alla Orange", category: "Latte + Rempah", ingredients: ["1/2-1 oz sirup jeruk", "1 cengkeh", "1 irisan kulit jeruk", "1/2-1 oz rum", "2 oz espresso/kopi strong", "4-6 oz susu steam", "Whipped cream", "Parutan kulit jeruk"], method: "Masukkan sirup dan rum. Seduh kopi. Tuangkan susu steam. Hias dengan krim dan parutan jeruk.", fact: "Menambahkan rasa jeruk dan sedikit rum untuk sentuhan Mediterania pada latte." },
+            { id: 62, name: "Banana-Lovers' Latte", category: "Latte + Rempah", ingredients: ["3-4 oz espresso/kopi strong panas", "1 oz sirup crème de cacao", "1 oz sirup crème de banana", "8 oz susu steam", "Irisan daging buah kelapa"], method: "Campurkan espresso dan sirup. Isi sisa mug dengan susu steam. Bubuhkan irisan daging buah kelapa.", fact: "Latte bertema tropis, memadukan pisang, cokelat (crème de cacao), dan kelapa." },
+            { id: 63, name: "\"Rolo\"-Way Latte", category: "Latte + Rempah", ingredients: ["3/4 oz sirup coklat", "3/4 oz sirup caramel", "2 oz espresso panas", "4 oz susu steam", "Whipped cream", "Bubuk cocoa"], method: "Tuangkan sirup ke mug. Tambahkan espresso panas. Tuangkan susu. Bubuhkan whipped cream, lumuri sirup caramel dan coklat.", fact: "Terinspirasi dari permen Rolo, kombinasi cokelat dan karamel yang meleleh." },
+            { id: 64, name: "Sciampagna Latte", category: "Latte + Rempah", ingredients: ["3 oz espresso/kopi strong panas", "6 oz susu steam", "Bubuk cocoa/kayu manis"], method: "Tuangkan espresso ke gelas champagne. Secara perlahan, tuangkan susu steam.", fact: "Latte yang disajikan dalam gelas champagne untuk presentasi yang elegan." },
+            { id: 65, name: "Vanilla Fudge Latte", category: "Latte + Rempah", ingredients: ["1/2 oz sirup coklat putih", "1/4 oz sirup coklat", "1/4 oz sirup hazelnut", "1.5 oz espresso/kopi strong", "4 oz susu steam", "Whipped cream", "Chopped nuts"], method: "Tuangkan sirup ke cangkir. Tambahkan espresso dan susu steam. Aduk. Bubuhkan whipped cream dan kacang cincang.", fact: "Memadukan fudge cokelat dengan hazelnut dan vanilla untuk rasa yang sangat manis." },
+            { id: 66, name: "Dutch Mocha Mint Latte", category: "Latte + Rempah", ingredients: ["1.5 oz sirup coklat", "1/2 oz sirup crème de menthe", "1/2 oz sirup crème de cacao", "2 oz espresso", "6 oz susu steam", "Whipped cream", "Bubuk cocoa"], method: "Tuangkan sirup dan espresso ke mug. Isi sisa cangkir dengan susu steam. Bubuhkan whipped cream dan bubuk cocoa.", fact: "Kombinasi klasik mocha dengan sentuhan menyegarkan dari mint." },
+            { id: 67, name: "Pump Spice Latte", category: "Latte + Rempah", ingredients: ["1 shot espresso", "Susu di-steam", "2 pumps sirup pumpkin", "1 pump sirup vanilla", "Whipped cream", "Cinnamon"], method: "Tuangkan espresso, susu steam, sirup pumpkin dan vanilla. Tambahkan whipped cream dan taburan cinnamon.", fact: "Minuman fenomena budaya yang dipopulerkan di musim gugur, memadukan labu dan rempah." },
+            { id: 68, name: "Crème Caramel Latte", category: "Latte + Rempah", ingredients: ["1/4 oz sirup Torani vanilla", "1/2 oz sirup Torani caramel", "29 ml espresso", "Susu steam"], method: "Tuang espresso ke cangkir, masukkan sirup caramel. Tambahkan susu steam. Bubuhkan sirup Torani vanilla.", fact: "Latte klasik yang diresapi dengan rasa karamel dan vanilla yang manis." },
+            { id: 69, name: "Classic Vanilla Latte", category: "Latte + Rempah", ingredients: ["2 shots espresso", "8 oz susu steam", "1 oz sirup vanilla"], method: "Tuangkan espresso, masukkan susu steam, lalu tambahkan sirup vanilla.", fact: "Salah satu varian latte yang paling dasar dan populer di seluruh dunia." },
+            { id: 70, name: "Sugar-Free Java Chai Latte", category: "Latte + Rempah", ingredients: ["7 oz susu steam", "3/4 oz premium sugar-free chai tea concentrate", "2 oz espresso/kopi hitam", "1 batang kayu manis", "Bubuk kapulaga/pala"], method: "Steam susu. Tuangkan ke mug, tambahkan chai tea concentrate plus espresso. Aduk dengan batang kayu manis. Taburkan bubuk kapulaga/pala.", fact: "Pilihan rendah gula untuk menikmati kombinasi klasik chai dan kopi." },
+            { id: 71, name: "Melya", category: "Berperisa", ingredients: ["1/4-1/8 espresso", "1 sdt madu", "1 sdt bubuk cocoa asli", "Susu steam", "Cream"], method: "Di mug, masukkan bubuk cocoa dan madu. Tuang kopi, aduk. Bubuhkan cream.", fact: "Kopi dengan madu dan cokelat, menawarkan rasa yang manis alami." },
+            { id: 72, name: "Marocchino", category: "Berperisa", ingredients: ["20-25 ml espresso", "10-15 ml coklat panas", "25 ml susu steam", "Bubuk fat cocoa"], method: "Tuangkan coklat panas kental. Seduh espresso, tuangkan. Tambahkan susu steam. Percikkan bubuk cocoa.", fact: "Minuman kecil dari Alessandria, Italia, namanya diambil dari warna bahan kulit coklat terang." },
+            { id: 73, name: "Turtle Mochaccino", category: "Berperisa", ingredients: ["2 oz espresso panas", "1 oz sirup caramel", "1 oz sirup hazelnut", "1 oz sirup coklat", "6 oz susu steam"], method: "Tuang dan campurkan espresso dan semua sirup. Isi sisa gelas dengan susu steam. Aduk.", fact: "Dinamai karena profil rasanya yang kaya, mirip seperti permen cokelat, karamel, dan pecan/hazelnut yang terkenal." },
+            { id: 74, name: "Café Con Miel", category: "Berperisa", ingredients: ["2 cangkir kopi", "1/2 cangkir susu", "4 sdm madu", "1/8 sdt ekstrak vanilla", "1/8 sdt bubuk kayu manis", "Pala"], method: "Campurkan semua bahan, panaskan dengan api rendah. Aduk rata. Sajikan.", fact: "Dalam bahasa Spanyol berarti 'kopi dengan madu', populer disajikan setelah makan malam." },
+            { id: 75, name: "Café Mocha", category: "Berperisa", ingredients: ["8 oz espresso/kopi kuat", "2 sdm hot chocolate", "1/2 cangkir susu di-frothing", "Whipped cream", "Bubuk cocoa"], method: "Masukkan kopi dan hot chocolate, aduk. Frothing susu. Tuangkan susu yang di-froth. Bubuhkan whipped cream dan bubuk cocoa.", fact: "Nama 'Mocha' berasal dari pelabuhan Al Mokka di Yaman, pusat perdagangan kopi kuno." },
+            { id: 76, name: "Café de Olla", category: "Berperisa", ingredients: ["6 cups air", "2/3 cup bubuk kopi", "1 batang kayu manis", "4 sdm gula merah"], method: "Panaskan air sampai mendidih. Masukkan kopi, cinnamon, dan gula. Panaskan 30 detik. Aduk rata, sajikan.", fact: "Cara tradisional membuat kopi di Meksiko, disajikan dalam cerek tanah liat." },
+            { id: 77, name: "Millionaire's Mochaccino", category: "Berperisa", ingredients: ["1/2 oz sirup orange", "1/2 oz coffee-flavored syrup", "2-4 oz espresso panas", "4 oz susu di-froth/steam", "Whipped cream", "Biji kopi"], method: "Campurkan sirup. Tambahkan espresso. Masukkan susu. Bubuhkan whipped cream, taburkan biji kopi.", fact: "Minuman mewah yang menggabungkan rasa kopi, cokelat, dan jeruk." },
+            { id: 78, name: "Amaretto Mochaccino", category: "Berperisa", ingredients: ["1-2 oz sirup coklat", "4-5 oz susu steam", "1/2 oz espresso panas", "1/2 oz sirup almond", "Whipped cream", "Chocolate sauce"], method: "Froth sirup coklat dan susu steam. Tambahkan espresso dan sirup almond. Bubuhkan whipped cream. Lumerkan chocolate sauce.", fact: "Perpaduan rasa cokelat dan kacang almond (amaretto) yang populer di Italia." },
+            { id: 79, name: "Brown Cow Cappuccino", category: "Berperisa", ingredients: ["3 oz susu steam", "3 oz susu froth", "2 oz espresso panas", "1/2-1 oz B-52 syrup", "1/2-1 oz white chocolate syrup"], method: "Tuangkan susu steam, sendokkan susu froth. Masukkan espresso panas dan semua sirup secara perlahan.", fact: "Kreasi cappuccino yang diperkaya dengan sirup cokelat putih dan B-52 (liqueur kopi, krim, dan jeruk)." },
+            { id: 80, name: "Mint Cappuccino", category: "Berperisa", ingredients: ["1 oz sirup crème de cacao", "1 oz sirup crème de menthe", "2-4 oz espresso panas", "Chocolate curls", "Chocolate-mint candy wafers"], method: "Masukkan dan campurkan semua sirup dan espresso. Hias dengan coklat serut.", fact: "Kombinasi krim cokelat dan mint yang menyegarkan pada dasar cappuccino." },
+            { id: 81, name: "Café Con Leche", category: "Berperisa", ingredients: ["2/3 cup bubuk kopi segar", "2 cups air mendidih", "2 cups susu", "4 batang kayu manis", "Gula"], method: "Masukkan bubuk kopi ke Frenchpress. Tekan ampas. Panaskan susu dengan kayu manis. Campurkan kopi dan susu.", fact: "Salah satu cara paling populer di Meksiko dan Spanyol untuk menyajikan kopi, selalu dengan susu." },
+            { id: 82, name: "Funky Frappétini", category: "Berperisa", ingredients: ["1.5 oz espresso", "1 oz coffee-flavored syrup", "1/2 oz simple syrup", "1.5 oz vodka", "6 ice cubes", "Sirup coklat", "Bubuk cocoa"], method: "Tuangkan sirup coklat ke gelas martini secara spiral. Masukkan semua bahan cair dan es dalam shaker. Guncangkan.", fact: "Minuman cocktail yang memadukan kopi, sirup, dan vodka dalam format martini." },
+            { id: 83, name: "Greek Frappe Coffee", category: "Dingin", ingredients: ["3-4 sdt kopi instan", "2-4 sdt gula", "2-6 oz air", "2-6 oz susu", "Es"], method: "Campurkan kopi, gula, dan sedikit air dalam shaker, guncangkan hingga berbusa. Tuang ke tumbler berisi es, tambahkan air/susu.", fact: "Ditemukan secara tidak sengaja pada tahun 1957, sangat populer di Yunani saat musim panas." },
+            { id: 84, name: "Japanese Iced Coffee", category: "Dingin", ingredients: ["4 sdm bubuk kopi", "230 gram air", "8 ice cubes"], method: "Seduh kopi dengan metode pour over langsung di atas es batu.", fact: "Metode ini 'mengunci' rasa dan aroma kopi yang lebih kompleks dan cerah." },
+            { id: 85, name: "Espresso Ice", category: "Dingin", ingredients: ["1/2 cup espresso", "3 cups crushed ice", "3 iris lemon", "Gula pasir"], method: "Campurkan espresso dengan es dalam blender. Tuangkan ke gelas yang tepinya telah digosok lemon dan gula.", fact: "Kopi beku yang memiliki tekstur seperti *slushie*, diperkuat dengan rasa citrus." },
+            { id: 86, name: "Iced Moroccan", category: "Dingin", ingredients: ["4 oz kopi (Pressed)", "2 oz sirup Moroccan", "16 ice cubes", "4 oz susu", "4 oz susu coklat", "Bubuk kayu manis", "Butiran coklat"], method: "Masukkan kopi dan sirup ke gelas dingin berisi es. Masukkan susu dan susu coklat. Garnish.", fact: "Minuman dingin dengan sentuhan rasa Moroko, biasanya melibatkan rempah dan cokelat." },
+            { id: 87, name: "Iced Alexander Mint", category: "Dingin", ingredients: ["4 oz kopi (Pressed)", "2 oz sirup crème de cacao", "2 oz crushed ice", "4 oz susu", "4 oz susu coklat", "Pala", "Butiran coklat"], method: "Tuangkan kopi dan sirup crème de cacao ke gelas dingin berisi es. Masukkan susu dan coklat susu. Garnish.", fact: "Versi minty dan dingin dari kreasi Alexander yang berbasis cokelat dan krim." },
+            { id: 88, name: "Mazagran", category: "Dingin", ingredients: ["1 cup espresso/black coffee", "1/2 cup jus lemon", "Gula pasir", "Es"], method: "Campurkan kopi dengan jus lemon dan gula. Tuangkan ke cangkir. Masukkan es. Garnish dengan irisan lemon.", fact: "Minuman dingin dan manis khas Algeria, sangat populer di Portugis sebagai minuman musim panas." },
+            { id: 89, name: "Java Mojo", category: "Dingin", ingredients: ["Irisan lemon", "2 sdt gula", "8-10 daun mint", "2 sdm jus lime", "8 ice cubes", "1.5 oz white rum", "2 oz espresso/kopi hitam", "Club soda"], method: "Lumatkan mint dan jus lemon. Masukkan es, rum, dan espresso. Isi sisa dengan club soda.", fact: "Mirip Mojito tetapi menggunakan kopi dan rum sebagai basis, memberikan *kick* kafein." },
+            { id: 90, name: "Iced Soya-ccino", category: "Dingin", ingredients: ["8 oz susu kedelai", "4 kubus es kopi"], method: "Campurkan susu kedelai dan es kopi beku ke dalam blender. Blend sampai halus. Sajikan.", fact: "Alternatif non-dairy (bebas susu) untuk cappuccino dingin, menggunakan susu kedelai." },
+            { id: 91, name: "Affogato", category: "Lainnya", ingredients: ["2 small scoops es krim vanilla/coklat", "1 shot espresso", "Dark chocolate iris", "Hazelnut cincang"], method: "Masukkan dua scoops es krim. Tuangkan satu shot espresso panas di atasnya. Garnish.", fact: "Affogato berarti 'tenggelam' dalam bahasa Italia, menggambarkan es krim yang 'tenggelam' dalam espresso." },
+            { id: 92, name: "Caffe Medici", category: "Lainnya", ingredients: ["Doppio (2 shots espresso)", "Sirup coklat", "Kulit jeruk", "Whipped cream"], method: "Masukkan sirup coklat dan kulit jeruk ke cup espresso. Seduh espresso langsung. Aduk lembut. Garnish dengan whipped cream.", fact: "Kopi yang diperkaya rasa coklat dan citrus, sering disajikan dengan whipped cream tebal." },
+            { id: 93, name: "Caffe Shakerato", category: "Lainnya", ingredients: ["2 oz kopi cold brew", "1 oz simple syrup", "Es"], method: "Masukkan kopi cold brew dan simple syrup ke shaker. Isi dengan es, guncang hebat selama 45 detik.", fact: "Espresso yang digoncang dengan es dan gula, menghasilkan minuman yang sangat dingin dan berbuih." },
+            { id: 94, name: "Nitro Coffee", category: "Lainnya", ingredients: ["16 oz kopi cold brew", "1 shot nitrogen"], method: "Infusikan kopi cold brew dengan gas nitrogen di dalam dispenser khusus. Proses ini memberikan kopi tekstur yang creamy dan busa yang tebal.", fact: "Memiliki rasa yang lebih manis secara alami dan tingkat keasaman yang lebih rendah, sering disajikan tanpa gula/susu." },
+            { id: 95, name: "Zebra Mocha", category: "Lainnya", ingredients: ["1/4-1/3 cup espresso", "15 ml sirup white chocolate", "15 ml sirup coklat", "Susu steam", "Whipped cream", "Parutan coklat"], method: "Campurkan espresso dan sirup. Masukkan susu steam. Bubuhkan whipped cream. Taburkan parutan coklat.", fact: "Memadukan sirup cokelat putih dan cokelat hitam, menciptakan kontras seperti zebra." },
+            // Tambahan 5 resep baru untuk menggenapkan menjadi 100
+            { id: 96, name: "Caramel Macchiato", category: "Latte + Rempah", ingredients: ["1 shot espresso", "6 oz susu steam", "1 oz sirup vanilla", "Drizzle saus karamel"], method: "Tuang sirup vanilla ke gelas. Tambahkan susu steam. Tuang espresso di atas busa (untuk layering). Hias dengan saus karamel.", fact: "Salah satu minuman paling ikonik, populer karena layering susu, espresso, dan karamelnya." },
+            { id: 97, name: "Iced White Mocha", category: "Dingin", ingredients: ["2 shots espresso dingin", "4 oz susu", "2 oz saus cokelat putih", "Es"], method: "Campurkan saus cokelat putih dan susu di gelas. Tambahkan es. Tuang espresso dingin di atasnya.", fact: "Versi dingin dan manis dari Café Mocha, menggunakan cokelat putih alih-alih cokelat hitam." },
+            { id: 98, name: "Cinnamon Dolce Latte", category: "Latte + Rempah", ingredients: ["1 shot espresso", "6 oz susu steam", "1 oz sirup cinnamon dolce", "Whipped cream", "Bubuk kayu manis"], method: "Campurkan espresso dan sirup. Tuangkan susu steam. Hias dengan whipped cream dan bubuk kayu manis.", fact: "Fokus pada rasa kayu manis yang manis dan hangat." },
+            { id: 99, name: "Mocha Mint Freeze", category: "Dingin", ingredients: ["2 shots espresso dingin", "4 oz susu", "1 oz sirup cokelat", "1 oz sirup mint", "Crushed ice"], method: "Campurkan semua bahan dalam blender hingga halus. Sajikan di gelas tinggi.", fact: "Minuman *blended* yang menyegarkan, sempurna untuk musim panas dengan *hint* mint." },
+            { id: 100, name: "Espresso Bomb", category: "Espresso Dasar", ingredients: ["2 shots Ristretto", "1 oz krim kental manis dingin", "Sedikit ekstrak vanila"], method: "Campurkan krim dan vanila. Tuang Ristretto panas di atasnya. Langsung diminum dalam satu tegukan.", fact: "Minuman yang sangat *intense*, dirancang untuk memberikan *shot* kafein dan rasa manis yang kuat." }
         ];
 
 
@@ -144,18 +231,25 @@
             const closeModalBtn = document.getElementById('close-modal-btn');
             const filtersContainer = document.getElementById('category-filters');
 
-            const categories = ['Semua', ...new Set(recipes.map(r => r.category))];
+            // Collect unique categories and ensure 'Semua' is the first one
+            const uniqueCategories = new Set(recipes.map(r => r.category));
+            const categories = ['Semua', ...Array.from(uniqueCategories).sort()];
 
             function createFilterButtons() {
+                filtersContainer.innerHTML = '';
                 categories.forEach(category => {
                     const button = document.createElement('button');
                     button.textContent = category;
-                    button.className = 'filter-btn px-4 py-2 rounded-full text-sm font-medium';
+                    // Initial styling, 'Semua' gets the active class
+                    button.className = 'filter-btn px-5 py-2 rounded-lg text-sm font-semibold tracking-wider hover:shadow-md';
                     if (category === 'Semua') {
                         button.classList.add('active-filter');
                     }
                     button.addEventListener('click', () => {
-                        document.querySelector('.active-filter').classList.remove('active-filter');
+                        // Remove active class from all buttons
+                        document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active-filter'));
+                        
+                        // Add active class to the clicked button, apply new style
                         button.classList.add('active-filter');
                         renderRecipes(category);
                     });
@@ -169,8 +263,9 @@
 
                 filteredRecipes.forEach(recipe => {
                     const card = document.createElement('div');
-                    card.className = 'recipe-card rounded-lg p-4 shadow-md cursor-pointer flex flex-col justify-center items-center text-center';
-                    card.innerHTML = `<h3 class="text-base font-semibold text-indigo-700">${recipe.name}</h3>`;
+                    // Cafe style card: white background, shadow, rounded
+                    card.className = 'recipe-card rounded-xl p-5 shadow-lg cursor-pointer flex flex-col justify-center items-center text-center hover:shadow-xl';
+                    card.innerHTML = `<h3 class="text-lg font-bold text-slate-900">${recipe.name}</h3><p class="text-xs text-amber-700 mt-1">${recipe.category}</p>`;
                     card.addEventListener('click', () => showModal(recipe));
                     grid.appendChild(card);
                 });
@@ -179,6 +274,7 @@
             function showModal(recipe) {
                 modalTitle.textContent = recipe.name;
                 let bodyHtml = `
+                    <p class="text-amber-700 text-sm font-semibold mb-4 uppercase">${recipe.category}</p>
                     <h3>Komposisi</h3>
                     <ul>${recipe.ingredients.map(i => `<li>${i}</li>`).join('')}</ul>
                     <h3>Cara Membuat</h3>
@@ -187,8 +283,8 @@
                 if (recipe.fact) {
                     bodyHtml += `
                         <div class="fact-box mt-6 p-4 rounded-lg">
-                            <h3 class="mt-0 pt-0 border-none">Tahukah Anda?</h3>
-                            <p class="italic text-indigo-800">${recipe.fact}</p>
+                            <h3 class="mt-0 pt-0 border-none text-slate-800">Tahukah Anda?</h3>
+                            <p class="italic text-slate-700">${recipe.fact}</p>
                         </div>
                     `;
                 }
@@ -202,6 +298,7 @@
                 modal.classList.remove('flex');
             }
 
+            // Event listeners for modal control
             closeModalBtn.addEventListener('click', closeModal);
             modal.addEventListener('click', (event) => {
                 if (event.target === modal) {
@@ -209,6 +306,7 @@
                 }
             });
 
+            // Initialization
             createFilterButtons();
             renderRecipes();
         });
